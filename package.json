@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
+    "@google/generative-ai": "^0.21.0",
     "@hapi/boom": "^10.0.1",
     "@whiskeysockets/baileys": "latest",
     "awesome-phonenumber": "^2.64.0",
