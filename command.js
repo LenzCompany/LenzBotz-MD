@@ -3,6 +3,7 @@ const fs = require("fs")
 const fetch = require("node-fetch")
 const axios = require("axios")
 const { exec } = require("child_process")
+const util = require("util")
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const {
     getGroupAdmins,
@@ -175,6 +176,10 @@ module.exports = async (sock, m) => {
 
         //BATASSSS
         switch (command) {
+            //search
+            case "google":
+                const googlee = await fetchJson(``)
+                break
             //NSFW MENU
             case "waifu": case "neko": case "trap": case "blowjob":
                 const rawr = await fetchJson(`https://api.waifu.pics/nsfw/${command}`)
@@ -198,8 +203,22 @@ module.exports = async (sock, m) => {
                 const manok = await luminai(text)
             m.reply(manok.result)
             break
+            //GENERAL
+            case 'ping':
+                const startTIme = Date.now()
+                const response = await fetch(`https://github.com`)
+                const endTime = Date.now()
+                if (response.ok) {
+                    const ping = endTime - startTIme
+                    m.reply(`Ping : ${ping}ms\n\nServer : https://github.com`)
+                }
+                break
             case 'menu':
                 const menunya = `Hello ${pushname}!
+
+*GENERAL*
+${prefix}ping
+${prefix}menu
 
 *AI MENU*
 ${prefix}openai
@@ -213,9 +232,51 @@ ${prefix}trap
 ${prefix}blowjob
 
 *DOWNLOADER*
-${prefix}tiktok `
+${prefix}tiktok
+
+*FAKE ADDRES*
+${prefix}fake-addres
+
+*SEARCH MENU*
+${prefix}npm
+${prefix}youtube-search / yts
+${prefix}xnxx-search / xnxxs
+
+*OWNER*
+${prefix}update`
                 m.reply(menunya)
                 break;
+                //search meneu
+                case 'xnxx-search': case 'xnxxs':
+                    if (!text) return m.reply(`${prefix + command} query`)
+                        const xnxxss = await fetchJson(`https://api.vreden.my.id/api/xnxxsearch?query=${text}`)
+                    m.reply(util.format(xnxxss.result.result))
+                    break
+                case 'yts': case "youtube-search":
+                    if (!text) return m.reply(`${prefix + command} query`)
+                        const res3 = await fetchJson(`https://api.vreden.my.id/api/yts?query=${text}`)
+                    m.reply(util.format(res3.result.all))
+                    break
+                case 'npm': 
+                if (!text) return m.reply(`${text + command} query`)
+                const res2 = await fetchJson(`https://api.popcat.xyz/npm?q=${text}`)
+                m.reply(util.format(res2))
+                break
+                //FAKE ADDRES
+                case 'fake-addres': case 'random-user':
+                    const gg = await fetchJson(`https://randomuser.me/api/`)
+m.reply(util.format(gg.results))
+                    break
+
+                //OWNER MENU
+                case 'update':
+                    if (!isCreator) return m.reply("LU BUKAN OWNER")
+                        exec(`git pull https://github.com/LenzCompany/LenzBotz-MD`, (err, stdout) => {
+                            if (err) return m.reply(`${err}`)
+                            if (stdout) return m.reply(stdout)
+                        })
+                    break;
+                //DOWNLOADER MENU
                 case 'tiktok': 
                 if (!text) return m.reply(`${prefix + command} link tiktok`)
                     const res = await fetch(`https://tikwm.com/api?url=${text}`)
